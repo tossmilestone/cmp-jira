@@ -32,14 +32,22 @@ M.parse_api_response = function(response)
   return true, issues
 end
 
+M.get_api_key = function(config)
+  local api_key = config.jira.api_key
+  if vim.fn.exists("$JIRA_USER_API_KEY") == 1 then
+    api_key = vim.fn.getenv("JIRA_USER_API_KEY")
+  end
+  return api_key
+end
+
 M.get_basic_auth = function(config)
   local user = M.get_user(config)
-  local api_key = vim.fn.getenv("JIRA_USER_API_KEY")
+  local api_key = M.get_api_key(config)
   return user .. ":" .. api_key
 end
 
 M.get_auth_header = function(config)
-  local api_key = vim.fn.getenv("JIRA_USER_API_KEY")
+  local api_key = M.get_api_key(config)
   return string.format("Bearer %s", api_key)
 end
 
